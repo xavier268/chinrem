@@ -1,11 +1,21 @@
 package chinrem
 
-import "math/big"
+import (
+	"fmt"
+	"math/big"
+	"strings"
+)
 
 // CRI is the main type for Chinese Remainer Integers.
 type CRI struct {
 	rm []int64
 	e  *CREngine
+}
+
+func (c *CRI) String() string {
+	sb := new(strings.Builder)
+	fmt.Fprintf(sb, "%#v\n", c)
+	return sb.String()
 }
 
 func (e *CREngine) NewCRI() *CRI {
@@ -81,6 +91,15 @@ func (c *CRI) Clone() *CRI {
 
 func (c *CRI) ToBig() *big.Int {
 
-	panic("to do")
+	b := big.NewInt(0)
+	bb := big.NewInt(0)
+
+	for i, cp := range c.e.coprimes {
+		bb.Mul(big.NewInt(c.rm[i]), cp)
+		b.Add(b, bb)
+		b.Mod(b, c.e.limit)
+	}
+
+	return b
 
 }

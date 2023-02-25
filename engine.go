@@ -98,8 +98,8 @@ func (e *CREngine) initCoprimes() {
 
 func (e *CREngine) String() string {
 	sb := new(strings.Builder)
-	fmt.Fprintf(sb, "Engine dump (size %d)\n", e.size)
-	fmt.Fprintf(sb, "\t\tLimit :\t%v\n", e.limit)
+	fmt.Fprintf(sb, "\t\tSize\t%d\n", e.size)
+	fmt.Fprintf(sb, "\t\tLimit\t%v\n", e.limit)
 	fmt.Fprintln(sb, "\t\tPrimes\tCoprimes :")
 	for i, p := range e.primes {
 		fmt.Fprintf(sb, "%d\t%9d\t%v\n", i, p, e.coprimes[i])
