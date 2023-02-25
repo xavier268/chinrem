@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+// CREngine is the configuation and processing object.
+// It can be safely accessed concurrently, because it is never modified once created.
 type CREngine struct {
 	// The core parameters to compute efficiently modulo limit.
 	size   int     // number of primes to consider

@@ -3,6 +3,7 @@ package chinrem
 import (
 	"fmt"
 	"math/big"
+	"math/rand"
 	"testing"
 )
 
@@ -63,6 +64,16 @@ func TestCRIVisual(t *testing.T) {
 	h.Normalize()
 	if !h.Equal(f) {
 		t.Fail()
+	}
+
+	for i := 0; i < 10; i++ {
+		r := e.NewCRIRand(rand.New(rand.NewSource(42 * int64(i))))
+		fmt.Println("rand", r, r.ToBig())
+		kk := r.Clone()
+		kk.Normalize()
+		if !kk.Equal(r) {
+			t.FailNow()
+		}
 	}
 
 }

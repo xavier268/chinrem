@@ -3,6 +3,7 @@ package chinrem
 import (
 	"fmt"
 	"math/big"
+	"math/rand"
 	"strings"
 )
 
@@ -102,4 +103,12 @@ func (c *CRI) ToBig() *big.Int {
 
 	return b
 
+}
+
+func (e *CREngine) NewCRIRand(rd *rand.Rand) *CRI {
+	c := e.NewCRI()
+	for i := range c.rm {
+		c.rm[i] = rd.Int63n(c.e.primes[i])
+	}
+	return c
 }
