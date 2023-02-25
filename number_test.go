@@ -47,11 +47,58 @@ func TestPrimesVisual(t *testing.T) {
 
 func TestCRIVisual(t *testing.T) {
 
-	c := NewCRI(5)
-	fmt.Println(c)
-	fmt.Println(c.Max())
-	if c.Max().Int64() != 2310 {
+	z := NewCRI(5)
+	fmt.Println(z)
+	fmt.Println(z.Limit())
+	if z.Limit().Int64() != 2310 {
+		t.FailNow()
+	}
+
+	a := NewCRI(1000)
+	fmt.Println(a.Limit())
+	if a.Limit().Int64() == 2310 {
+		t.FailNow()
+	}
+
+	b := a.Clone()
+	if !a.Equal(b) {
 		t.Fail()
+	}
+	b.Minus()
+	if !a.Equal(b) {
+		t.Fail()
+	}
+	b.Minus()
+	if !a.Equal(b) {
+		t.Fail()
+	}
+
+	c := NewCRIInt64(5, 1000)
+	d := NewCRISlice([]int64{0, 1, 0, 6, 10})
+	e := NewCRISlice([]int64{1000, 1000, 1000, 1000, 1000})
+	f := c.Clone()
+
+	if !c.Equal(f) {
+		t.Fail()
+	}
+	f.Minus()
+	if c.Equal(f) {
+		t.Fail()
+	}
+	f.Minus()
+	if !c.Equal(f) {
+		t.Fail()
+	}
+
+	if d.Equal(e) {
+		t.FailNow()
+	}
+	e.Normalize()
+	if !d.Equal(e) {
+		t.FailNow()
+	}
+	if !c.Equal(d) {
+		t.FailNow()
 	}
 
 }
