@@ -58,7 +58,7 @@ func TestCRIVisual(t *testing.T) {
 	}
 
 	h := e.NewCRISlice([]int64{300, 300, 300, 300, 300, 300, 300, 300, 300, 300})
-	if h.Equal(f) {
+	if !h.Equal(f) { // now, the NewCRISlice normalize !
 		t.Fail()
 	}
 	h.Normalize()
@@ -132,9 +132,116 @@ func TestInv(t *testing.T) {
 			b.Mul(a, b)
 			if !b.IsOne() {
 				fmt.Println(b)
-				t.Fatalf("\nfailed inversing %v modulo %v", a, b.e.limit)
+				t.Fatalf("\nfailed inverting %v modulo %v", a, b.e.limit)
 			}
 		}
 	}
+}
 
+func TestEngineChange(t *testing.T) {
+
+	e1 := NewCREngine(5)
+	e2 := NewCREngine(10)
+	rd := rand.New(rand.NewSource(42))
+
+	for i := 0; i < 10; i++ { // extend
+		r1 := e1.NewCRIRand(rd)
+		r2 := r1.CloneE(e2)
+		if r1.ToBig().Cmp(r2.ToBig()) != 0 {
+			t.Fatalf("extending should not change the big value, but it did\n%v -> %v", r1.ToBig(), r2.ToBig())
+		}
+	}
+	for i := 0; i < 10; i++ { // truncate
+		r1 := e2.NewCRIRand(rd)
+		r2 := r1.CloneE(e2)
+		if r1.ToBig().Cmp(r2.ToBig()) != 0 {
+			t.Fatalf("extending should not change the big value, but it did\n%v -> %v", r1.ToBig(), r2.ToBig())
+		}
+	}
+
+}
+
+func TestCmpVisual(t *testing.T) {
+	e := NewCREngine(5)
+	rd := rand.New(rand.NewSource(42))
+
+	for i := 1; i < 20; i++ {
+		a := e.NewCRIRand(rd)
+		b := e.NewCRIRand(rd)
+		ab := a.Cmp(b)
+		ba := b.Cmp(a)
+		switch ab {
+		case +1:
+			fmt.Println(a, ">", b)
+		case 0:
+			fmt.Println(a, "=", b)
+		case -1:
+			fmt.Println(a, "<", b)
+		default:
+			t.Fatalf("unexpected value for Cmp : %d", ab)
+		}
+		if ab != -ba {
+			t.Fatalf("Comparison did not reverse correctly ?")
+		}
+	}
+
+	for i := 1; i < 20; i++ {
+		a := e.NewCRIInt64(int64(i - 1))
+		b := e.NewCRIInt64(int64(i))
+		ab := a.Cmp(b)
+		ba := b.Cmp(a)
+		switch ab {
+		case +1:
+			fmt.Println(a, ">", b)
+		case 0:
+			fmt.Println(a, "=", b)
+		case -1:
+			fmt.Println(a, "<", b)
+		default:
+			t.Fatalf("unexpected value for Cmp : %d", ab)
+		}
+		if ab != -ba {
+			t.Fatalf("Comparison did not reverse correctly ?")
+		}
+	}
+
+	for i := 1; i < 20; i++ { // compare to 0
+		a := e.NewCRIInt64(0)
+		b := e.NewCRIRand(rd)
+		ab := a.Cmp(b)
+		ba := b.Cmp(a)
+		switch ab {
+		case +1:
+			fmt.Println(a, ">", b)
+		case 0:
+			fmt.Println(a, "=", b)
+		case -1:
+			fmt.Println(a, "<", b)
+		default:
+			t.Fatalf("unexpected value for Cmp : %d", ab)
+		}
+		if ab != -ba {
+			t.Fatalf("Comparison did not reverse correctly ?")
+		}
+	}
+
+	for i := 1; i < 20; i++ { // compare to limit-1
+		a := e.NewCRIInt64(-1)
+		b := e.NewCRIRand(rd)
+		ab := a.Cmp(b)
+		ba := b.Cmp(a)
+		switch ab {
+		case +1:
+			fmt.Println(a, ">", b)
+		case 0:
+			fmt.Println(a, "=", b)
+		case -1:
+			fmt.Println(a, "<", b)
+		default:
+			t.Fatalf("unexpected value for Cmp : %d", ab)
+		}
+		if ab != -ba {
+			t.Fatalf("Comparison did not reverse correctly ?")
+		}
+	}
 }
