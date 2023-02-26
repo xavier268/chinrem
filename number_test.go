@@ -144,18 +144,36 @@ func TestEngineChange(t *testing.T) {
 	e2 := NewCREngine(10)
 	rd := rand.New(rand.NewSource(42))
 
+	fmt.Println("Extending ...")
+
 	for i := 0; i < 10; i++ { // extend
 		r1 := e1.NewCRIRand(rd)
 		r2 := r1.CloneE(e2)
+		fmt.Println(r1, r2)
 		if r1.ToBig().Cmp(r2.ToBig()) != 0 {
 			t.Fatalf("extending should not change the big value, but it did\n%v -> %v", r1.ToBig(), r2.ToBig())
 		}
 	}
-	for i := 0; i < 10; i++ { // truncate
+	fmt.Println("Truncating ...")
+
+	for i := 0; i < 10; i++ { // truncate (should changes the value)
 		r1 := e2.NewCRIRand(rd)
-		r2 := r1.CloneE(e2)
+		r2 := r1.CloneE(e1)
+		//fmt.Println(r1, r2)
 		if r1.ToBig().Cmp(r2.ToBig()) != 0 {
-			t.Fatalf("extending should not change the big value, but it did\n%v -> %v", r1.ToBig(), r2.ToBig())
+			fmt.Printf("value changed:\t%v\t-> %v\n", r1, r2)
+		} else {
+			fmt.Printf("value stay same:\t%v\t-> %v\n", r1, r2)
+		}
+	}
+	for i := 0; i < 15; i++ { // truncate small values
+		r1 := e2.NewCRIInt64(int64(i))
+		r2 := r1.CloneE(e1)
+		//fmt.Println(r1, r2)
+		if r1.ToBig().Cmp(r2.ToBig()) != 0 {
+			fmt.Printf("value changed:\t%v\t-> %v\n", r1, r2)
+		} else {
+			fmt.Printf("value stay same:\t%v\t-> %v\n", r1, r2)
 		}
 	}
 
