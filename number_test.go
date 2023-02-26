@@ -45,14 +45,14 @@ func TestCRIVisual(t *testing.T) {
 	if !f.Equal(g) {
 		t.Fail()
 	}
-	g.Minus()
+	g.Minus(g)
 	if f.Equal(g) {
 		t.Fail()
 	}
 	if g.ToBig().Int64() != -300+e.limit.Int64() {
 		t.Fail()
 	}
-	g.Minus()
+	g.Minus(g)
 	if !f.Equal(g) {
 		t.Fail()
 	}
@@ -73,6 +73,69 @@ func TestCRIVisual(t *testing.T) {
 		kk.Normalize()
 		if !kk.Equal(r) {
 			t.FailNow()
+		}
+	}
+
+}
+
+func TestGcd(t *testing.T) {
+
+	data := []int64{ // a,b,gcd(a,b)
+		4, 5, 1,
+		15, 3, 3,
+		1, 1, 1,
+		0, 5, 5,
+		0, 0, 0,
+		-2, 5, 1,
+		-2, -5, 1,
+		0, -3, 3,
+		-15, 20, 5,
+		30, -10, 10,
+	}
+
+	for i := 0; i < len(data); i += 3 {
+
+		a, b, g := data[i], data[i+1], data[i+2]
+		gg, u, v := gcd(a, b)
+		if g != gg {
+			t.Fatalf("gcd of %d and %d returned %d but expected %d", a, b, gg, g)
+		}
+		ggg := a*u + b*v
+		if ggg != g {
+			t.Fatalf("bezout equation invalid : %d*%d+%d*%d = %d (expected %d)", a, u, b, v, ggg, g)
+		}
+
+		// Switching a and b, and running same test
+		a, b = b, a
+
+		gg, u, v = gcd(a, b)
+		if g != gg {
+			t.Fatalf("gcd of %d and %d returned %d but expected %d", a, b, gg, g)
+		}
+		ggg = a*u + b*v
+		if ggg != g {
+			t.Fatalf("bezout equation invalid : %d*%d+%d*%d = %d (expected %d)", a, u, b, v, ggg, g)
+		}
+	}
+}
+
+func TestInv(t *testing.T) {
+
+	e := NewCREngine(5)
+	rd := rand.New(rand.NewSource(42))
+	b := e.NewCRI()
+
+	for i := 0; i < 100; i++ {
+		a := e.NewCRIRand(rd)
+		err := b.Inv(a)
+		if err == nil {
+			b.Mul(a, b)
+			if !b.IsOne() {
+				fmt.Println(b)
+				t.Fatalf("\nfailed inversing %v modulo %v", a, b.e.limit)
+			}
+		} else {
+			//fmt.Println(a, err)
 		}
 	}
 

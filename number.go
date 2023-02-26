@@ -53,6 +53,11 @@ func (e *CREngine) NewCRISlice(value []int64) *CRI {
 	return c
 }
 
+// SameEngine checks if both CRI are pointing to the same CREngine.
+func SameEngine(a, b *CRI) bool {
+	return a != nil && b != nil && a.e == b.e
+}
+
 // Equal compares, assuming canonical form - see Normalize.
 func (c *CRI) Equal(d *CRI) bool {
 	if d == nil {
@@ -73,14 +78,11 @@ func (c *CRI) Equal(d *CRI) bool {
 // This is the canonical form aof a CRI.
 func (c *CRI) Normalize() {
 	for i, r := range c.rm {
-		c.rm[i] = r % c.e.primes[i]
-	}
-}
-
-// Minus changes the sign of c
-func (c *CRI) Minus() {
-	for i, r := range c.rm {
-		c.rm[i] = (-r) % c.e.primes[i]
+		a := r % c.e.primes[i]
+		if a < 0 {
+			a += c.e.primes[i]
+		}
+		c.rm[i] = a
 	}
 }
 
