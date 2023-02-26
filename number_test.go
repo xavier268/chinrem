@@ -134,8 +134,6 @@ func TestInv(t *testing.T) {
 				fmt.Println(b)
 				t.Fatalf("\nfailed inversing %v modulo %v", a, b.e.limit)
 			}
-		} else {
-			//fmt.Println(a, err)
 		}
 	}
 
