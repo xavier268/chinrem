@@ -13,6 +13,10 @@ type CRI struct {
 	e  *CREngine
 }
 
+func (c *CRI) Limit() *big.Int {
+	return c.e.Limit()
+}
+
 func (c *CRI) String() string {
 	sb := new(strings.Builder)
 	fmt.Fprintf(sb, "%v (%v)", c.ToBig(), c.rm)

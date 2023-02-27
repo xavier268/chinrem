@@ -108,3 +108,7 @@ func (e *CREngine) String() string {
 	}
 	return sb.String()
 }
+
+func (e *CREngine) Limit() *big.Int {
+	return e.limit
+}
