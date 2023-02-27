@@ -4,7 +4,7 @@
 
 This librairy allows to perfom arithmetic by internally encoding positive numbers using their remainers, modulo primes.
 
-The theorem of the chinese remainder states that : _a number is uniquely defined, modulo the product of the primes used, by its remainder modulo different primes._
+The theorem of the chinese remainder states that : _a number is uniquely defined by its remainders modulo different primes, modulo the product of all the primes used._
 
 The benefit of that approach is that :
 * any positive big.Int can be encoded/decoded in a unique manner, modulo a very large "limit", that can be arbitrily set.
