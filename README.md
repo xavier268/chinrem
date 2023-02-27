@@ -34,13 +34,21 @@ The benefit of that approach is that :
 
 Using big.Int package (from the go standard library) versus this package (chinrem).
 
-    2023-02-27 17:52:38.3041445 +0100 CET m=+0.004099401
-    goos: windows
-    goarch: amd64
-    pkg: github.com/xavier268/chinrem
-    cpu: Intel(R) Core(TM) i7-10700 CPU @ 2.90GHz
-    BenchmarkBigVersusChinrem/big.Int-mul-16         	 1000000	    102797 ns/op	   73156 B/op	       0 allocs/op
-    BenchmarkBigVersusChinrem/chinrem.CRI-mul-16     	 1680429	       714.6 ns/op	       0 B/op	       0 allocs/op
-    BenchmarkBigVersusChinrem/big.Int-inv-16         	 3178966	       435.5 ns/op	     560 B/op	       8 allocs/op
-    BenchmarkBigVersusChinrem/chinrem.CRI-inv-16     	100000000	        10.53 ns/op	       0 B/op	       0 allocs/op
+    2023-02-27 22:45:44.8145345 +0100 CET m=+0.004601701
+    === RUN   BenchmarkBigVersusChinrem/big.Int-mul
+    BenchmarkBigVersusChinrem/big.Int-mul
+    BenchmarkBigVersusChinrem/big.Int-mul-16
+    1000000            103266 ns/op           73156 B/op          0 allocs/op
+    === RUN   BenchmarkBigVersusChinrem/chinrem.CRI-mul
+    BenchmarkBigVersusChinrem/chinrem.CRI-mul
+    BenchmarkBigVersusChinrem/chinrem.CRI-mul-16
+    1679671               714.1 ns/op             0 B/op          0 allocs/op
+    === RUN   BenchmarkBigVersusChinrem/big.Int-inv
+    BenchmarkBigVersusChinrem/big.Int-inv
+    BenchmarkBigVersusChinrem/big.Int-inv-16
+    2051143               517.8 ns/op           560 B/op          8 allocs/op
+    === RUN   BenchmarkBigVersusChinrem/chinrem.CRI-inv
+    BenchmarkBigVersusChinrem/chinrem.CRI-inv
+    BenchmarkBigVersusChinrem/chinrem.CRI-inv-16
+    100000000               10.58 ns/op            0 B/op          0 allocs/op
     PASS

@@ -39,7 +39,7 @@ func (c *CRI) Add(a, b *CRI) *CRI {
 // Mul a*b, storing result in c, returning c.
 func (c *CRI) Mul(a, b *CRI) *CRI {
 	for i, p := range c.e.primes {
-		c.rm[i] = (a.rm[i] * c.rm[i]) % p
+		c.rm[i] = (a.rm[i] * b.rm[i]) % p
 	}
 	return c
 }
@@ -89,5 +89,21 @@ func (c *CRI) Inv(a *CRI) error {
 		}
 		c.rm[i] = u
 	}
+	return nil
+}
+
+var ErrDivideByZero = fmt.Errorf("divide by 0")
+var ErrNotDivisible = fmt.Errorf("is not divisible")
+
+// Div computes a/b modulo limit , stores result in c, returns error if not divisible.
+func (c *CRI) Quo(a, b *CRI) error {
+
+	err := c.Inv(b)
+	if err != nil {
+		return err
+	}
+	fmt.Println("DEBUG QUO : ", c.ToBig())
+	c.Mul(c, a)
+	fmt.Println("DEBUG QUO : ", c.ToBig())
 	return nil
 }

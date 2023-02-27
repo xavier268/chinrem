@@ -263,3 +263,34 @@ func TestCmpVisual(t *testing.T) {
 		}
 	}
 }
+
+func TestQuoVisualBASIC(t *testing.T) {
+	e := NewCREngine(3)
+	var a, b, q *CRI
+
+	a = e.NewCRIInt64(4)
+	b = e.NewCRIInt64(1)
+	q = e.NewCRI()
+
+	err := q.Quo(a, b)
+	fmt.Println(err, a.ToBig(), "/", b.ToBig(), "=", q.ToBig())
+
+}
+
+func TestQuoTable(t *testing.T) {
+	e := NewCREngine(4)
+	var a, b, q *CRI
+	m := e.Limit().Int64()
+
+	for i := int64(1); i < m; i++ {
+		for j := int64(1); j < m; j++ {
+			a, b = e.NewCRIInt64(i), e.NewCRIInt64(j)
+			err := q.Quo(a, b)
+			if err != nil {
+				fmt.Println(err, i, "/", j)
+			} else {
+				fmt.Println(i, "/", j, "=", q.ToBig())
+			}
+		}
+	}
+}
