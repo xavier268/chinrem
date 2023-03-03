@@ -1,5 +1,9 @@
 # chinrem
 
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/xavier268/chinrem.svg)](https://pkg.go.dev/github.com/xavier268/chinrem) 
+[![Go Report Card](https://goreportcard.com/badge/github.com/xavier268/chinrem)](https://goreportcard.com/report/github.com/xavier268/chinrem)
+
 ## Chinese remainder arithmetic (massively parallele computation for very large numbers)
 
 This librairy does arithmetic by internally encoding positive numbers using their remainers, modulo a set of primes.
