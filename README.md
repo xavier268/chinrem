@@ -9,7 +9,7 @@ The theorem of the chinese remainder states that : _a number is uniquely defined
 The benefit of that approach is that :
 * any positive big.Int can be encoded/decoded in a unique manner, modulo a very large "limit", that can be arbitrily set.
 * most arithmetic operations can be performed separately and easily on each remainer,
-* limited to no memory allocation is required,
+* no memory allocation is required (as opposed to golang's big.Int)
 * _(future step) massive thread paralelization becomes possible, to maximize use of multi core cpu ..._
 
 
