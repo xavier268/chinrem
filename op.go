@@ -45,9 +45,12 @@ func (c *CRI) Mul(a, b *CRI) *CRI {
 }
 
 // Exp computes  a^b modulo limit, storing result in c, returning c.
+
+/*
 func (c *CRI) Exp(a, b *CRI) *CRI {
 	panic("todo")
 }
+*/
 
 // utility that returns g as the gcd of a and b, and u,v such that au + bv = g.
 // by convention, gcd(0,0) = 0
