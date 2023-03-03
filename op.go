@@ -54,8 +54,6 @@ func (c *CRI) Exp(a, b *CRI) *CRI {
 // and gcd(0,a) = a
 func gcd(a, b int64) (g, u, v int64) {
 
-	// TODO - handle 0 or panic ?
-
 	g, u, v = a, 1, 0
 	var gg, uu, vv int64 = b, 0, 1
 
@@ -95,15 +93,42 @@ func (c *CRI) Inv(a *CRI) error {
 var ErrDivideByZero = fmt.Errorf("divide by 0")
 var ErrNotDivisible = fmt.Errorf("is not divisible")
 
-// Div computes a/b modulo limit , stores result in c, returns error if not divisible.
+// Quo computes quotient q of a/b modulo limit, such that a = bq modulo limit, and stores result in c, returns error if not divisible.
+// In general, this is very diferent from the usual integer quotient a/b.
 func (c *CRI) Quo(a, b *CRI) error {
 
-	err := c.Inv(b)
-	if err != nil {
-		return err
+	bIsZero := true
+
+	for i, bi := range b.rm {
+		ai := a.rm[i]
+		pi := a.e.primes[i]
+
+		if ai == 0 {
+			if bi != 0 {
+				bIsZero = false
+				c.rm[i] = 0
+				continue
+			} else {
+				// ai=bi=0 ... ambiguous, could be anything !
+				c.rm[i] = 1
+			}
+		} else {
+			// ai != 0
+			if bi == 0 {
+				return ErrNotDivisible
+			} else {
+				bIsZero = false
+				if bi == ai {
+					c.rm[i] = 1
+				} else {
+					_, r, _ := gcd(bi, pi)
+					c.rm[i] = (r * ai) % pi
+				}
+			}
+		}
 	}
-	fmt.Println("DEBUG QUO : ", c.ToBig())
-	c.Mul(c, a)
-	fmt.Println("DEBUG QUO : ", c.ToBig())
+	if bIsZero {
+		return ErrDivideByZero
+	}
 	return nil
 }

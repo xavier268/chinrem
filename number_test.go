@@ -264,12 +264,12 @@ func TestCmpVisual(t *testing.T) {
 	}
 }
 
-func TestQuoVisualBASIC(t *testing.T) {
+func TestQuoVisual(t *testing.T) {
 	e := NewCREngine(3)
 	var a, b, q *CRI
 
 	a = e.NewCRIInt64(4)
-	b = e.NewCRIInt64(1)
+	b = e.NewCRIInt64(2)
 	q = e.NewCRI()
 
 	err := q.Quo(a, b)
@@ -277,20 +277,39 @@ func TestQuoVisualBASIC(t *testing.T) {
 
 }
 
-func TestQuoTable(t *testing.T) {
-	e := NewCREngine(4)
+func TestQuoSystematic(t *testing.T) {
+	e := NewCREngine(7)
 	var a, b, q *CRI
 	m := e.Limit().Int64()
+	q = e.NewCRI()
 
-	for i := int64(1); i < m; i++ {
-		for j := int64(1); j < m; j++ {
+	for i := int64(0); i < 1000; i++ {
+		for j := int64(0); j < 1000; j++ {
 			a, b = e.NewCRIInt64(i), e.NewCRIInt64(j)
 			err := q.Quo(a, b)
-			if err != nil {
-				fmt.Println(err, i, "/", j)
+			qq := q.ToBig().Int64()
+			if j != 0 {
+				if err != nil {
+					fmt.Printf("%d/%d=%d\t%d/%d=%v[%d]", i, j, i/j, i, j, err, m)
+				} else {
+					fmt.Printf("%d/%d=%d\t%d/%d=%d[%d]", i, j, i/j, i, j, qq, m)
+				}
 			} else {
-				fmt.Println(i, "/", j, "=", q.ToBig())
+				if err != nil {
+					fmt.Printf("%d/%d=NaN\t%d/%d=%v[%d]", i, j, i, j, err, m)
+				} else {
+					fmt.Printf("%d/%d=NaN\t%d/%d=%d[%d]", i, j, i, j, qq, m)
+				}
 			}
+			if err == nil {
+				fmt.Printf("\t\t Verify %d * %d = %d [%d]\n", j, qq, (j*qq)%m, m)
+				if i != (j*qq)%m {
+					t.Fatal("Verification failed !", (j*qq)%m)
+				}
+			} else {
+				fmt.Println()
+			}
+
 		}
 	}
 }
