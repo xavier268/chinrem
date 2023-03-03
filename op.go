@@ -94,7 +94,7 @@ var ErrDivideByZero = fmt.Errorf("divide by 0")
 var ErrNotDivisible = fmt.Errorf("is not divisible")
 
 // Quo computes quotient q of a/b modulo limit, such that a = bq modulo limit, and stores result in c, returns error if not divisible.
-// In general, this is very diferent from the usual integer quotient a/b.
+// In general, this is very different from the usual integer quotient a/b.
 func (c *CRI) Quo(a, b *CRI) error {
 
 	bIsZero := true
