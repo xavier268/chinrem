@@ -2,7 +2,7 @@
 
 ## Chinese remainder arithmetic (massively parallele computation for very large numbers)
 
-This librairy allows to perfom arithmetic by internally encoding positive numbers using their remainers, modulo primes.
+This librairy does arithmetic by internally encoding positive numbers using their remainers, modulo a set of primes.
 
 The theorem of the chinese remainder states that : _a number is uniquely defined by its remainders modulo different primes, modulo the product of all the primes used._
 
