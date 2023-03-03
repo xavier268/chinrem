@@ -54,7 +54,8 @@ func (e *CREngine) NewCRIBig(value *big.Int) *CRI {
 	return c
 }
 
-// Creates a Normalized CRI
+// Creates a CRI from provided slice. 
+// Slice length shoud match engine length.
 func (e *CREngine) NewCRISlice(value []int64) *CRI {
 	if len(value) != e.size {
 		panic("Provided slice should match CREngine size")
