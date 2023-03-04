@@ -5,6 +5,7 @@ import (
 	"math/big"
 )
 
+// Test is c is zero, modulo Limit.
 func (c *CRI) IsZero() bool {
 	for _, r := range c.rm {
 		if r != 0 {
@@ -14,6 +15,7 @@ func (c *CRI) IsZero() bool {
 	return true
 }
 
+// Test if c is 1 modulo Limit
 func (c *CRI) IsOne() bool {
 	for _, r := range c.rm {
 		if r != 1 {
@@ -47,17 +49,8 @@ func (c *CRI) Mul(a, b *CRI) *CRI {
 	return c
 }
 
-// Exp computes  a^b modulo limit, storing result in c, returning c.
-
-/*
-func (c *CRI) Exp(a, b *CRI) *CRI {
-	panic("todo")
-}
-*/
-
-// utility that returns g as the gcd of a and b, and u,v such that au + bv = g.
-// by convention, gcd(0,0) = 0
-// and gcd(0,a) = a
+// utility that returns g as the gcd of a and b, and u,v such that au + bv = g, using Euclid algorithm.
+// By convention, gcd(0,0) = 0 and gcd(0,a) = a
 func gcd(a, b int64) (g, u, v int64) {
 
 	g, u, v = a, 1, 0
@@ -143,7 +136,7 @@ func (c *CRI) Quo(a, b *CRI) error {
 // b should be 0 or positive.
 func expi(a, b, m int64) (r int64) {
 	if b < 0 || (a == 0 && b == 0) || (m <= 1) {
-		panic(fmt.Sprintf("operation not defined yet : %v^%v[%v]", a, b, m))
+		panic(fmt.Sprintf("operation not defined  : %v^%v[%v]", a, b, m))
 	}
 	a = a % m
 
@@ -252,7 +245,7 @@ func (c *CRI) Exp(a *CRI, n *big.Int) *CRI {
 		}
 		return c
 		/*
-			// this alternative, although simpler, is less efficient ...
+			// this alternative, although simpler, is less efficient (x2) ...
 			aa := a.ToBig()
 			c.SetBig(aa.Exp(aa, n, a.Limit()))
 			return c

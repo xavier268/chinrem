@@ -38,21 +38,18 @@ The benefit of that approach is that :
 
 Using big.Int package (from the go standard library) versus this package (chinrem).
 
-    2023-02-27 22:45:44.8145345 +0100 CET m=+0.004601701
-    === RUN   BenchmarkBigVersusChinrem/big.Int-mul
-    BenchmarkBigVersusChinrem/big.Int-mul
-    BenchmarkBigVersusChinrem/big.Int-mul-16
-    1000000            103266 ns/op           73156 B/op          0 allocs/op
-    === RUN   BenchmarkBigVersusChinrem/chinrem.CRI-mul
-    BenchmarkBigVersusChinrem/chinrem.CRI-mul
-    BenchmarkBigVersusChinrem/chinrem.CRI-mul-16
-    1679671               714.1 ns/op             0 B/op          0 allocs/op
-    === RUN   BenchmarkBigVersusChinrem/big.Int-inv
-    BenchmarkBigVersusChinrem/big.Int-inv
-    BenchmarkBigVersusChinrem/big.Int-inv-16
-    2051143               517.8 ns/op           560 B/op          8 allocs/op
-    === RUN   BenchmarkBigVersusChinrem/chinrem.CRI-inv
-    BenchmarkBigVersusChinrem/chinrem.CRI-inv
-    BenchmarkBigVersusChinrem/chinrem.CRI-inv-16
-    100000000               10.58 ns/op            0 B/op          0 allocs/op
+Benchmark shows very significant gains (x50) for simple operations (multiply, inverse), but some disadvantage for exponentiation (x2)
+
+    2023-03-04 13:31:48.816278621 +0100 CET m=+0.008978675
+    goos: linux
+    goarch: amd64
+    pkg: github.com/xavier268/chinrem
+    cpu: Intel(R) Core(TM) i7-10700 CPU @ 2.90GHz
+    BenchmarkBvC/big.mul-8         	  357344	     57094 ns/op	   26296 B/op	       0 allocs/op
+    BenchmarkBvC/chinrem.mul-8     	 1621789	       726.9 ns/op	       0 B/op	       0 allocs/op
+    BenchmarkBvC/big.inv-8         	 2579451	       467.1 ns/op	     560 B/op	       8 allocs/op
+    BenchmarkBvC/chinrem.inv-8     	100000000	        10.55 ns/op	       0 B/op	       0 allocs/op
+    BenchmarkBvC/big.Exp-8         	  120085	      9820 ns/op	    1608 B/op	      12 allocs/op
+    BenchmarkBvC/chinrem.Exp-8     	   51651	     23104 ns/op	     903 B/op	       1 allocs/op
     PASS
+    ok  	github.com/xavier268/chinrem	27.868s

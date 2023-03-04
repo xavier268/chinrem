@@ -21,11 +21,11 @@ func reset() {
 	limit = e.Limit()
 }
 
-func BenchmarkBigVersusChinrem(b *testing.B) {
+func BenchmarkBvC(b *testing.B) {
 
 	fmt.Println(time.Now())
 
-	b.Run("big.Int-mul", func(bb *testing.B) {
+	b.Run("big.mul", func(bb *testing.B) {
 		reset()
 		bb.ResetTimer()
 
@@ -34,7 +34,7 @@ func BenchmarkBigVersusChinrem(b *testing.B) {
 		}
 	})
 
-	b.Run("chinrem.CRI-mul", func(bb *testing.B) {
+	b.Run("chinrem.mul", func(bb *testing.B) {
 		reset()
 		bb.ResetTimer()
 
@@ -43,7 +43,7 @@ func BenchmarkBigVersusChinrem(b *testing.B) {
 		}
 	})
 
-	b.Run("big.Int-inv", func(bb *testing.B) {
+	b.Run("big.inv", func(bb *testing.B) {
 		reset()
 		bb.ResetTimer()
 
@@ -52,7 +52,7 @@ func BenchmarkBigVersusChinrem(b *testing.B) {
 		}
 	})
 
-	b.Run("chinrem.CRI-inv", func(bb *testing.B) {
+	b.Run("chinrem.inv", func(bb *testing.B) {
 		reset()
 		bb.ResetTimer()
 
@@ -61,7 +61,7 @@ func BenchmarkBigVersusChinrem(b *testing.B) {
 		}
 	})
 
-	b.Run("big.Int-ExpMod", func(bb *testing.B) {
+	b.Run("big.Exp", func(bb *testing.B) {
 		reset()
 		bb.ResetTimer()
 		for i := 1; i < bb.N; i++ {
@@ -69,7 +69,7 @@ func BenchmarkBigVersusChinrem(b *testing.B) {
 		}
 	})
 
-	b.Run("chinrem.CRI-Exp", func(bb *testing.B) {
+	b.Run("chinrem.Exp", func(bb *testing.B) {
 		reset()
 		bb.ResetTimer()
 

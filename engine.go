@@ -19,6 +19,8 @@ type CREngine struct {
 	coprimes []*big.Int // coprimes [i] is the product of primes[j] for j != i, multiplied by its own inverse modulo prime[i], then modulo limit
 }
 
+// Creates a new CREngine with the specified size.
+// The size is the number of primes used to define a (positive) number, modulo the product of all these primes.
 func NewCREngine(size int) *CREngine {
 	e := new(CREngine)
 	e.size = size
@@ -119,7 +121,7 @@ func (e *CREngine) Limit() *big.Int {
 }
 
 // Phi is the product of all the (prime - 1) in the base.
-// For any non nul number a, we have a ^ phi = 1, modulo Limit.
+// The Fermat theorem states that, for any non zero number a, a ^ phi = 1, modulo Limit.
 func (e *CREngine) Phi() *big.Int {
 	return e.phi
 }
