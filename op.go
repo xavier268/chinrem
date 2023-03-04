@@ -1,6 +1,9 @@
 package chinrem
 
-import "fmt"
+import (
+	"fmt"
+	"math/big"
+)
 
 func (c *CRI) IsZero() bool {
 	for _, r := range c.rm {
@@ -134,4 +137,126 @@ func (c *CRI) Quo(a, b *CRI) error {
 		return ErrDivideByZero
 	}
 	return nil
+}
+
+// computes a ^b moldulo m.
+// b should be 0 or positive.
+func expi(a, b, m int64) (r int64) {
+	if b < 0 || (a == 0 && b == 0) || (m <= 1) {
+		panic(fmt.Sprintf("operation not defined yet : %v^%v[%v]", a, b, m))
+	}
+	a = a % m
+
+	if a == 0 || a == 1 || b == 1 {
+		return a
+	}
+
+	r = 1
+	for b > 0 {
+		if b%2 == 1 {
+			// b is odd, multiply result
+			r = (r * a) % m
+		}
+		b = b >> 1
+		a = (a * a) % m
+	}
+	return r
+}
+
+/*
+// Deprecated
+func expb(a int64, n *big.Int, buffer *big.Int, m int64) (r int64) {
+	if n.Sign() < 0 || (m <= 1) {
+		panic(fmt.Sprintf("operation not defined yet : %v^%v[%v]", a, n, m))
+	}
+	a = a % m
+
+	if n.Sign() == 0 {
+		return 1
+	}
+
+	if a == 0 || a == 1 || (n.IsInt64() && n.Int64() == 1) {
+		return a
+	}
+
+	r = 1
+	buffer.Set(n)
+	for buffer.Sign() > 0 {
+
+		if buffer.Bit(0) == 1 {
+			// b is odd, multiply result
+			r = (r * a) % m
+		}
+		buffer.Rsh(buffer, 1)
+		a = (a * a) % m
+	}
+	return r
+}
+
+*/
+
+// ExpI computes a^n modulo limit, where the exponent is a positive int64, stores the result in c and returns it.
+func (c *CRI) ExpI(a *CRI, n int64) *CRI {
+
+	for i, ai := range a.rm {
+		c.rm[i] = expi(ai, n, a.e.primes[i])
+	}
+	return c
+}
+
+/*
+// Deprecated
+func (c *CRI) ExpB(a *CRI, n *big.Int) *CRI {
+
+	if n.Sign() == 0 {
+		copy(c.rm, a.rm)
+		return c
+	}
+
+	nn := big.NewInt(0)
+	nn.Mod(n, a.Phi())
+
+	buffer := big.NewInt(0)
+	for i, ai := range a.rm {
+		c.rm[i] = expb(ai, n, buffer, a.e.primes[i])
+	}
+
+	return c
+}
+*/
+
+// Exp computes a^n modulo limit, where the exponent is a positive int64, stores the result in c and returns it.
+func (c *CRI) Exp(a *CRI, n *big.Int) *CRI {
+	switch n.Sign() {
+	case 0:
+		copy(c.rm, a.rm)
+		return c
+	case -1:
+		panic("negative exponents are not implemented")
+	default:
+
+		nn := big.NewInt(0).Mod(n, a.Phi())
+		aa := a.Clone()
+
+		for i := range c.rm {
+			c.rm[i] = 1
+		}
+		for nn.Sign() > 0 {
+
+			if nn.Bit(0) == 1 {
+				// n is odd, multiply result
+				c.Mul(c, aa)
+			}
+			nn.Rsh(nn, 1)
+			aa.Mul(aa, aa)
+		}
+		return c
+		/*
+			// this alternative, although simpler, is less efficient ...
+			aa := a.ToBig()
+			c.SetBig(aa.Exp(aa, n, a.Limit()))
+			return c
+		*/
+	}
+
 }

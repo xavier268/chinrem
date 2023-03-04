@@ -17,6 +17,10 @@ func (c *CRI) Limit() *big.Int {
 	return c.e.Limit()
 }
 
+func (c *CRI) Phi() *big.Int {
+	return c.e.Phi()
+}
+
 func (c *CRI) String() string {
 	sb := new(strings.Builder)
 	fmt.Fprintf(sb, "%v (%v)", c.ToBig(), c.rm)
@@ -30,37 +34,56 @@ func (e *CREngine) NewCRI() *CRI {
 	return c
 }
 
-// Creates a Normalized CRI
+// Creates a Normalized CRI form int64
 func (e *CREngine) NewCRIInt64(value int64) *CRI {
+	return e.NewCRI().SetInt64(value)
+}
 
-	c := e.NewCRI()
+// Set c to the specified value, returning c
+func (c *CRI) SetInt64(value int64) *CRI {
 	for i := range c.rm {
-		v := value % e.primes[i]
+		pi := c.e.primes[i]
+		v := value % pi
 		if v < 0 {
-			v = v + e.primes[i]
+			v = v + pi
 		}
 		c.rm[i] = v
 	}
 	return c
 }
 
-// Creates a Normalized CRI
+// Creates a Normalized CRI from big.Int
 func (e *CREngine) NewCRIBig(value *big.Int) *CRI {
+	return e.NewCRI().SetBig(value)
+}
+
+// Set c to the big value provided, returning c.
+// c is normalized.
+func (c *CRI) SetBig(value *big.Int) *CRI {
 	var z big.Int
-	c := e.NewCRI()
 	for i := range c.rm {
-		c.rm[i] = z.Mod(value, big.NewInt(e.primes[i])).Int64()
+		c.rm[i] = z.Mod(value, big.NewInt(c.e.primes[i])).Int64()
 	}
 	return c
 }
 
-// Creates a CRI from provided slice. 
+// Set c to a, returning c
+func (c *CRI) Set(a *CRI) *CRI {
+	copy(c.rm, a.rm)
+	return c
+}
+
+// Creates a CRI from provided slice.
 // Slice length shoud match engine length.
 func (e *CREngine) NewCRISlice(value []int64) *CRI {
-	if len(value) != e.size {
+	return e.NewCRI().SetSlice(value)
+}
+
+// Set c to the slice value. Panic if length do not match.
+func (c *CRI) SetSlice(value []int64) *CRI {
+	if len(value) != c.e.size {
 		panic("Provided slice should match CREngine size")
 	}
-	c := e.NewCRI()
 	copy(c.rm, value)
 	c.Normalize()
 	return c
@@ -93,9 +116,9 @@ func (c *CRI) Equal(d *CRI) bool {
 //	 0 if c == a
 //	+1 if c > a
 //
-// The order defined is a total ordering that should match natural order for small positive values.
-// Normalization is assumed and not checked.
-// Different engines size will appear as different numbers.
+// The order defined is a total ordering that should match natural order for most small positive values.
+// Normalization is assumed and not enforced.
+// Different engines size will generate a différent ordering.
 func (c *CRI) Cmp(a *CRI) int {
 
 	if !SameEngine(a, c) { // sensible values if not same size, to avoid equality.
@@ -130,6 +153,7 @@ func (c *CRI) Normalize() {
 	}
 }
 
+// Create a new CRI by cloning an existing one.
 func (c *CRI) Clone() *CRI {
 	b := c.e.NewCRI()
 	copy(b.rm, c.rm)
@@ -137,7 +161,6 @@ func (c *CRI) Clone() *CRI {
 }
 
 func (c *CRI) ToBig() *big.Int {
-
 	b := big.NewInt(0)
 	bb := big.NewInt(0)
 
@@ -146,13 +169,14 @@ func (c *CRI) ToBig() *big.Int {
 		b.Add(b, bb)
 		b.Mod(b, c.e.limit)
 	}
-
 	return b
-
 }
 
 func (e *CREngine) NewCRIRand(rd *rand.Rand) *CRI {
-	c := e.NewCRI()
+	return e.NewCRI().SetRandom(rd)
+}
+
+func (c *CRI) SetRandom(rd *rand.Rand) *CRI {
 	for i := range c.rm {
 		c.rm[i] = rd.Int63n(c.e.primes[i])
 	}
@@ -174,5 +198,4 @@ func (c *CRI) CloneE(en *CREngine) *CRI {
 
 	// extending. Convert to a big as an intermediate value.
 	return en.NewCRIBig(c.ToBig())
-
 }

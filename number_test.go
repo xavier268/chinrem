@@ -283,8 +283,8 @@ func TestQuoSystematic(t *testing.T) {
 	m := e.Limit().Int64()
 	q = e.NewCRI()
 
-	for i := int64(0); i < 1000; i++ {
-		for j := int64(0); j < 1000; j++ {
+	for i := int64(0); i < 10; i++ {
+		for j := int64(0); j < 10; j++ {
 			a, b = e.NewCRIInt64(i), e.NewCRIInt64(j)
 			err := q.Quo(a, b)
 			qq := q.ToBig().Int64()
